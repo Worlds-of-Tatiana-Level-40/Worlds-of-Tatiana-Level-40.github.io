@@ -316,7 +316,7 @@
 
 
 <!-- Script Tally -->
-<script async src="https://tally.so/widgets/embed.js"></script>
+<script async src="https://tally.so/widgets/embed.js"><>
 <script>
   document.getElementById("open-tally-btn").addEventListener("click", function () {
     Tally.openPopup("3xWvry", {
@@ -366,5 +366,23 @@
 
   <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
   <script src="script.js"></script>
+  
+  <script>
+  const successSound = new Audio('media/sons/success.mp3');
+
+  document.getElementById('open-tally-btn').addEventListener('click', () => {
+    Tally.openPopup('3xWvry', {
+      layout: 'modal',
+      width: 700,
+      autoClose: 3000,
+      doNotShowAfterSubmit: true,
+      onSubmit: (payload) => {
+        successSound.play();
+      }
+    });
+  });
+</script>
+
+  
 </body>
 </html>
