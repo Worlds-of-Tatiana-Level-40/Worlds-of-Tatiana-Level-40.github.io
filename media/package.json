@@ -1,0 +1,21 @@
+{
+  "name": "comic-con-birthday",
+  "version": "1.0.0",
+  "description": "Site web pour anniversaire Comic Con 2025",
+  "main": "index.html",
+  "scripts": {
+    "dev": "python -m http.server 8000",
+    "start": "python -m http.server 8000"
+  },
+  "keywords": [
+    "comic-con",
+    "birthday",
+    "party",
+    "geek",
+    "gaming"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {},
+  "dependencies": {}
+}
