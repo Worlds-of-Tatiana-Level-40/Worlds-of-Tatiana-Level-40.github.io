@@ -50,18 +50,6 @@ body {
   padding: 0 2rem;
 }
 
-/* Cursor glow effect */
-.cursor-glow {
-  position: fixed;
-  width: 20px;
-  height: 20px;
-  background: radial-gradient(circle, var(--primary-color) 0%, transparent 70%);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 9999;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
 
 /* Header */
 .header {
@@ -731,9 +719,10 @@ body {
   
   .timeline-time {
     position: absolute;
-    left: -40px;
-    min-width: 60px;
+    left: -15px;
+    min-width: 70px;
     font-size: 0.8rem;
+    padding: 0.4rem 0.6rem;
   }
   
   .timeline-content {
@@ -780,5 +769,104 @@ body {
   .animation-card,
   .info-card {
     padding: 1.5rem;
+  }
+}
+
+
+.animation-subsection {
+  margin-bottom: 2rem;
+}
+
+.toggle-subsection {
+  cursor: pointer;
+  color: var(--color-accent);
+  transition: color 0.2s;
+}
+
+.toggle-subsection:hover {
+  color: var(--color-primary);
+}
+
+.animation-content {
+  display: none;
+  margin-top: 1rem;
+}
+
+.animation-subsection.active .animation-content {
+  display: block;
+  animation: fadeIn 0.3s ease;
+}
+
+.animation-description {
+  color: var(--color-light);
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+  max-width: 800px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.reservation-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  max-width: 600px;
+  margin: 2rem auto;
+}
+
+.reservation-form .form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.reservation-form label {
+  font-weight: bold;
+  margin-bottom: 0.4rem;
+}
+
+.reservation-form input,
+.reservation-form textarea {
+  padding: 0.8rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.reservation-form textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.reservation-form .btn {
+  background-color: #ff3366;
+  color: white;
+  border: none;
+  padding: 0.9rem;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.reservation-form .btn:hover {
+  background-color: #e02e5c;
+}
+
+
+.zoom-button {
+  animation: pulse 2s infinite;
+  display: inline-block;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
   }
 }
