@@ -216,15 +216,25 @@ body {
   position: relative;
   width: 100%;
   height: 400px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 2rem;
+  align-items: center;
+  justify-items: center;
+  padding: 2rem;
 }
 
 .floating-element {
-  position: absolute;
+  position: relative;
   width: 64px;
   height: 64px;
-  animation: float 6s ease-in-out infinite;
+  animation: none;
   cursor: pointer;
   transition: transform 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .floating-element img {
@@ -239,11 +249,12 @@ body {
   transform: scale(1.1);
 }
 
-.floating-element:nth-child(1) { top: 10%; left: 20%; animation-delay: 0s; }
-.floating-element:nth-child(2) { top: 60%; left: 10%; animation-delay: 1s; }
-.floating-element:nth-child(3) { top: 20%; right: 20%; animation-delay: 2s; }
-.floating-element:nth-child(4) { bottom: 30%; right: 10%; animation-delay: 3s; }
-.floating-element:nth-child(5) { bottom: 10%; left: 40%; animation-delay: 4s; }
+/* Grille 3x2 pour 5 éléments */
+.floating-element:nth-child(1) { grid-column: 1; grid-row: 1; }
+.floating-element:nth-child(2) { grid-column: 2; grid-row: 1; }
+.floating-element:nth-child(3) { grid-column: 3; grid-row: 1; }
+.floating-element:nth-child(4) { grid-column: 1; grid-row: 2; }
+.floating-element:nth-child(5) { grid-column: 3; grid-row: 2; }
 
 /* Buttons */
 .btn {
@@ -435,7 +446,7 @@ body {
   font-size: 2rem;
   margin-bottom: 1rem;
   color: var(--primary-color);
-  font-family: 'Fredoka One', cursive;
+  font-family: 'Luckiest Guy', cursive;
 }
 
 .ticket-price {
@@ -753,11 +764,23 @@ body {
   }
   
   .floating-elements {
-    height: 200px;
+    height: 300px;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 1rem;
+    padding: 1rem;
   }
   
+  /* Réorganisation mobile : 2x3 */
+  .floating-element:nth-child(1) { grid-column: 1; grid-row: 1; }
+  .floating-element:nth-child(2) { grid-column: 2; grid-row: 1; }
+  .floating-element:nth-child(3) { grid-column: 1; grid-row: 2; }
+  .floating-element:nth-child(4) { grid-column: 2; grid-row: 2; }
+  .floating-element:nth-child(5) { grid-column: 1; grid-row: 3; }
+  
   .floating-element {
-    font-size: 2rem;
+    width: 48px;
+    height: 48px;
   }
   
   .section {
@@ -883,4 +906,55 @@ body {
   margin: 2rem auto;
 }
 
-.reservation
+.reservation-form .form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.reservation-form label {
+  font-weight: bold;
+  margin-bottom: 0.4rem;
+}
+
+.reservation-form input,
+.reservation-form textarea {
+  padding: 0.8rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.reservation-form textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.reservation-form .btn {
+  background-color: #ff3366;
+  color: white;
+  border: none;
+  padding: 0.9rem;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.reservation-form .btn:hover {
+  background-color: #e02e5c;
+}
+
+
+.zoom-button {
+  animation: pulse 2s infinite;
+  display: inline-block;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
