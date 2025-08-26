@@ -27,6 +27,19 @@
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+
+/* =======================
+   Polices
+======================= */
+
+body {
+  font-family: "Inter", sans-serif; /* texte courant */
+}
+
+h1, h2, h3, .logo-text, .hero-title-main, .hero-title-sub {
+  font-family: "Fredoka One", cursive; /* titres / éléments spéciaux */
+}
+
 /* Import Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Fredoka+One:wght@400&family=Baloo+2:wght@400;500;600;700;800&display=swap');
 
