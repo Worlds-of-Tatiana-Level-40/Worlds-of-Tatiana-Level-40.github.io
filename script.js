@@ -1,115 +1,92 @@
-// Initialisation d'AOS (Animate On Scroll)
+// Initialisation AOS
 AOS.init({
-  duration: 1000,
+  duration: 800,
+  easing: 'ease-in-out',
   once: true,
   offset: 100
 });
 
-// Gestion du menu burger
+// Menu burger
 const burgerMenu = document.querySelector('.burger-menu');
 const navMenu = document.querySelector('.nav-menu');
 
 if (burgerMenu && navMenu) {
   burgerMenu.addEventListener('click', () => {
-    navMenu.classList.toggle('active');
     burgerMenu.classList.toggle('active');
+    navMenu.classList.toggle('active');
   });
 
-  // Fermer le menu quand on clique sur un lien
+  // Fermer le menu en cliquant sur un lien
   document.querySelectorAll('.nav-link').forEach(link => {
     link.addEventListener('click', () => {
-      navMenu.classList.remove('active');
       burgerMenu.classList.remove('active');
+      navMenu.classList.remove('active');
     });
   });
 }
 
+// Smooth scroll pour les liens d'ancrage
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function (e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      const headerHeight = document.querySelector('.header').offsetHeight;
+      const targetPosition = target.offsetTop - headerHeight;
+      
+      window.scrollTo({
+        top: targetPosition,
+        behavior: 'smooth'
+      });
+    }
+  });
+});
 
-// Gestion de la galerie et lightbox
-const gallery = document.getElementById('gallery');
+// Galerie et Lightbox
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightbox-img');
 const lightboxClose = document.querySelector('.lightbox-close');
 
-// Images par défaut pour la galerie (utilisation d'images Pexels)
-const defaultImages = [
-  {
-    src: 'https://images.pexels.com/photos/163036/mario-luigi-yoschi-figures-163036.jpeg?auto=compress&cs=tinysrgb&w=400',
-    alt: 'Gaming figurines'
-  },
-  {
-    src: 'https://images.pexels.com/photos/442576/pexels-photo-442576.jpeg?auto=compress&cs=tinysrgb&w=400',
-    alt: 'Gaming setup'
-  },
-  {
-    src: 'https://images.pexels.com/photos/1293269/pexels-photo-1293269.jpeg?auto=compress&cs=tinysrgb&w=400',
-    alt: 'Comic books'
-  },
-  {
-    src: 'https://images.pexels.com/photos/1174746/pexels-photo-1174746.jpeg?auto=compress&cs=tinysrgb&w=400',
-    alt: 'Superhero figures'
-  },
-  {
-    src: 'https://images.pexels.com/photos/1637438/pexels-photo-1637438.jpeg?auto=compress&cs=tinysrgb&w=400',
-    alt: 'Gaming controllers'
-  },
-  {
-    src: 'https://images.pexels.com/photos/1298601/pexels-photo-1298601.jpeg?auto=compress&cs=tinysrgb&w=400',
-    alt: 'Cosplay masks'
-  }
-];
+// Fonction pour charger les images de la galerie
+function loadGalleryImages() {
+  const gallery = document.getElementById('gallery');
+  if (!gallery) return;
 
-// Charger les images dans la galerie
-if (gallery) {
-  // Essayer de charger depuis le dossier media d'abord
-  fetch('media/')
-    .then(response => response.text())
-    .then(data => {
-      const parser = new DOMParser();
-      const htmlDoc = parser.parseFromString(data, 'text/html');
-      const links = htmlDoc.querySelectorAll('a');
-      let hasImages = false;
+  const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+  const imagePromises = [];
+
+  // Essayer de charger les images de 1 à 20
+  for (let i = 1; i <= 20; i++) {
+    for (const ext of imageExtensions) {
+      const timestamp = new Date().getTime();
+      const imagePath = `media/galerie/image${i}.${ext}?v=${timestamp}`;
       
-      links.forEach(link => {
-        const href = link.getAttribute('href');
-        if (href && href.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
-          hasImages = true;
-          const img = document.createElement('img');
-          img.src = 'media/' + href;
-          img.alt = 'Photo souvenir';
-          img.loading = 'lazy';
-          
-          img.addEventListener('click', () => openLightbox(img.src));
-          gallery.appendChild(img);
-        }
+      const img = new Image();
+      img.src = imagePath;
+      
+      const promise = new Promise((resolve) => {
+        img.onload = () => resolve({ src: imagePath, exists: true });
+        img.onerror = () => resolve({ src: imagePath, exists: false });
       });
       
-      // Si aucune image trouvée, utiliser les images par défaut
-      if (!hasImages) {
-        loadDefaultImages();
-      }
-    })
-    .catch(() => {
-      // En cas d'erreur, charger les images par défaut
-      loadDefaultImages();
-    });
-}
+      imagePromises.push(promise);
+    }
+  }
 
-function loadDefaultImages() {
-  if (!gallery) return;
-  
-  defaultImages.forEach(imageData => {
-    const img = document.createElement('img');
-    img.src = imageData.src;
-    img.alt = imageData.alt;
-    img.loading = 'lazy';
+  Promise.all(imagePromises).then(results => {
+    const existingImages = results.filter(result => result.exists);
     
-    img.addEventListener('click', () => openLightbox(img.src));
-    gallery.appendChild(img);
+    existingImages.forEach(imageData => {
+      const img = document.createElement('img');
+      img.src = imageData.src;
+      img.alt = `Image galerie`;
+      img.addEventListener('click', () => openLightbox(imageData.src));
+      gallery.appendChild(img);
+    });
   });
 }
 
-// Fonctions lightbox
+// Ouvrir la lightbox
 function openLightbox(src) {
   if (lightbox && lightboxImg) {
     lightboxImg.src = src;
@@ -118,6 +95,7 @@ function openLightbox(src) {
   }
 }
 
+// Fermer la lightbox
 function closeLightbox() {
   if (lightbox) {
     lightbox.style.display = 'none';
@@ -138,107 +116,50 @@ if (lightbox) {
   });
 }
 
-// Fermer la lightbox avec Escape
+// Échapper pour fermer la lightbox
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     closeLightbox();
   }
 });
 
-// Smooth scroll pour les liens d'ancrage
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-  anchor.addEventListener('click', function (e) {
-    e.preventDefault();
-    const target = document.querySelector(this.getAttribute('href'));
-    if (target) {
-      const headerHeight = document.querySelector('.header').offsetHeight;
-      const targetPosition = target.offsetTop - headerHeight - 20;
-      
-      window.scrollTo({
-        top: targetPosition,
-        behavior: 'smooth'
-      });
-    }
-  });
-});
+// Charger les images au chargement de la page
+document.addEventListener('DOMContentLoaded', loadGalleryImages);
 
 // Effet parallax léger sur le hero
 window.addEventListener('scroll', () => {
   const scrolled = window.pageYOffset;
-  const hero = document.querySelector('.hero');
-  const header = document.querySelector('.header');
+  const heroBackground = document.querySelector('.hero-bg');
   
-  // Effet parallax sur le hero
-  if (hero) {
-    const rate = scrolled * -0.5;
-    hero.style.transform = `translateY(${rate}px)`;
-  }
-  
-  // Effet sur le header
-  if (header) {
-    if (scrolled > 100) {
-      header.style.background = 'rgba(15, 15, 35, 0.98)';
-      header.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.3)';
-    } else {
-      header.style.background = 'rgba(15, 15, 35, 0.95)';
-      header.style.boxShadow = 'none';
-    }
+  if (heroBackground) {
+    heroBackground.style.transform = `translateY(${scrolled * 0.5}px)`;
   }
 });
 
-// Fonction pour afficher des notifications
-function showNotification(message, type = 'info') {
-  // Créer l'élément notification s'il n'existe pas
-  let notificationContainer = document.querySelector('.notification-container');
-  if (!notificationContainer) {
-    notificationContainer = document.createElement('div');
-    notificationContainer.className = 'notification-container';
-    notificationContainer.style.cssText = `
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 10001;
-      pointer-events: none;
-    `;
-    document.body.appendChild(notificationContainer);
-  }
-  
-  const notification = document.createElement('div');
-  notification.className = `notification notification-${type}`;
-  notification.style.cssText = `
-    background: var(--bg-tertiary);
-    color: var(--text-primary);
-    padding: 1rem 1.5rem;
-    border-radius: var(--border-radius);
-    margin-bottom: 10px;
-    box-shadow: var(--shadow-xl);
-    border-left: 4px solid var(--${type === 'success' ? 'success' : type === 'error' ? 'error' : 'primary'}-color);
-    transform: translateX(400px);
-    transition: transform 0.3s ease;
-    pointer-events: auto;
-    max-width: 300px;
-  `;
-  
-  notification.textContent = message;
-  notificationContainer.appendChild(notification);
-  
-  // Animation d'entrée
-  setTimeout(() => {
-    notification.style.transform = 'translateX(0)';
-  }, 100);
-  
-  // Suppression automatique
-  setTimeout(() => {
-    notification.style.transform = 'translateX(400px)';
-    setTimeout(() => {
-      if (notification.parentNode) {
-        notification.parentNode.removeChild(notification);
-      }
-    }, 300);
-  }, 4000);
-}
+// Animation des éléments flottants
+document.querySelectorAll('.floating-element').forEach((element, index) => {
+  element.style.animationDelay = `${index * 0.5}s`;
+});
 
-// Easter egg : Konami Code
+// Gestion des sous-catégories d'animations
+document.querySelectorAll('.toggle-subsection').forEach(toggle => {
+  toggle.addEventListener('click', function() {
+    const subsection = this.closest('.animation-subsection');
+    const isActive = subsection.classList.contains('active');
+    
+    // Fermer toutes les autres sous-sections
+    document.querySelectorAll('.animation-subsection').forEach(section => {
+      section.classList.remove('active');
+    });
+    
+    // Ouvrir/fermer la sous-section cliquée
+    if (!isActive) {
+      subsection.classList.add('active');
+    }
+  });
+});
+
+// Easter egg - Code Konami
 let konamiCode = [];
 const konamiSequence = [
   'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown',
@@ -249,93 +170,104 @@ const konamiSequence = [
 document.addEventListener('keydown', (e) => {
   konamiCode.push(e.code);
   
-  // Garder seulement les 10 dernières touches
-  if (konamiCode.length > 10) {
+  if (konamiCode.length > konamiSequence.length) {
     konamiCode.shift();
   }
   
-  // Vérifier si le code Konami est correct
-  if (konamiCode.length === 10 && 
-      konamiCode.every((key, index) => key === konamiSequence[index])) {
-    
-    // Easter egg activé !
-    activateEasterEgg();
-    konamiCode = []; // Reset
+  if (JSON.stringify(konamiCode) === JSON.stringify(konamiSequence)) {
+    showNotification('🎮 Code Konami activé ! Bonus geek débloqué !', 'success');
+    // Ajouter un effet spécial
+    document.body.style.animation = 'rainbow 2s infinite';
+    setTimeout(() => {
+      document.body.style.animation = '';
+    }, 5000);
   }
 });
 
-function activateEasterEgg() {
-  // Créer des éléments qui tombent
-  const emojis = ['🎮', '🦸‍♂️', '🚀', '⚡', '🎭', '🎯', '💫', '🔥'];
+// Système de notifications
+function showNotification(message, type = 'info') {
+  const notification = document.createElement('div');
+  notification.className = `notification notification-${type}`;
+  notification.textContent = message;
   
-  for (let i = 0; i < 30; i++) {
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--gradient-primary);
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    z-index: 10000;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+  `;
+  
+  document.body.appendChild(notification);
+  
+  setTimeout(() => {
+    notification.style.transform = 'translateX(0)';
+  }, 100);
+  
+  setTimeout(() => {
+    notification.style.transform = 'translateX(100%)';
     setTimeout(() => {
-      const emoji = document.createElement('div');
-      emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-      emoji.style.cssText = `
-        position: fixed;
-        top: -50px;
-        left: ${Math.random() * window.innerWidth}px;
-        font-size: 2rem;
-        z-index: 10000;
-        pointer-events: none;
-        animation: fall 3s linear forwards;
-      `;
-      
-      document.body.appendChild(emoji);
-      
-      setTimeout(() => {
-        if (emoji.parentNode) {
-          emoji.parentNode.removeChild(emoji);
-        }
-      }, 3000);
-    }, i * 100);
-  }
-  
-  // Ajouter l'animation CSS si elle n'existe pas
-  if (!document.querySelector('#easter-egg-style')) {
-    const style = document.createElement('style');
-    style.id = 'easter-egg-style';
-    style.textContent = `
-      @keyframes fall {
-        to {
-          transform: translateY(${window.innerHeight + 100}px) rotate(360deg);
-          opacity: 0;
-        }
-      }
-    `;
-    document.head.appendChild(style);
-  }
-  
-  showNotification('🎉 Easter egg activé ! Code Konami détecté !', 'success');
+      document.body.removeChild(notification);
+    }, 300);
+  }, 3000);
 }
 
-// Animation des éléments flottants dans le hero
-document.querySelectorAll('.floating-element').forEach((element, index) => {
-  element.addEventListener('click', () => {
-    element.style.animation = 'none';
-    element.style.transform = 'scale(1.5) rotate(360deg)';
-    element.style.transition = 'transform 0.5s ease';
-    
-    setTimeout(() => {
-      element.style.animation = '';
-      element.style.transform = '';
-      element.style.transition = '';
-    }, 500);
-  });
+// Gestion Tally avec cache busting
+const successSound = new Audio(`media/sons/success.mp3?v=${new Date().getTime()}`);
+
+document.getElementById('open-tally-btn').addEventListener('click', (e) => {
+  e.preventDefault();
+  
+  // Supprimer l'ancienne instance de Tally si elle existe
+  if (window.Tally && window.Tally.closePopup) {
+    window.Tally.closePopup();
+  }
+  
+  // Recharger le script Tally avec cache busting
+  const timestamp = new Date().getTime();
+  const script = document.createElement('script');
+  script.src = `https://tally.so/widgets/embed.js?v=${timestamp}`;
+  script.onload = () => {
+    // Ouvrir le popup une fois le script chargé
+    if (window.Tally && window.Tally.openPopup) {
+      window.Tally.openPopup('3xWvry', {
+        layout: 'modal',
+        width: 700,
+        autoClose: 3000,
+        doNotShowAfterSubmit: true,
+        onSubmit: (payload) => {
+          try {
+            successSound.play();
+          } catch (error) {
+            console.log('Son non disponible');
+          }
+          showNotification('🎉 Réservation confirmée ! Merci !', 'success');
+        }
+      });
+    }
+  };
+  
+  // Remplacer l'ancien script
+  const oldScript = document.querySelector('script[src*="tally.so"]');
+  if (oldScript) {
+    oldScript.remove();
+  }
+  
+  document.head.appendChild(script);
 });
 
-// Initialisation terminée
-console.log('🎮 Comic Con Birthday - Script initialisé !');
-console.log('💡 Astuce : Essaie le code Konami (↑↑↓↓←→←→BA) pour une surprise !');
-
-
-
-// Dépli/repli des sous-catégories d'animations
-document.querySelectorAll('.toggle-subsection').forEach(title => {
-  title.addEventListener('click', () => {
-    const subsection = title.parentElement;
-    subsection.classList.toggle('active');
-  });
-});
-
+// Animation rainbow pour l'easter egg
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes rainbow {
+    0% { filter: hue-rotate(0deg); }
+    100% { filter: hue-rotate(360deg); }
+  }
+`;
+document.head.appendChild(style);
