@@ -28,7 +28,7 @@
 }
 
 /* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Baloo+2:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One:wght@400&family=Baloo+2:wght@400;500;600;700;800&display=swap');
 
 * {
   margin: 0;
@@ -83,7 +83,7 @@ body {
   font-weight: 700;
   color: #806600;
   text-decoration: none;
-  font-family: 'Luckiest Guy', cursive;
+  font-family: 'Fredoka One', cursive;
 }
 
 .logo-icon {
@@ -184,7 +184,7 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  font-family: 'Luckiest Guy', cursive;
+  font-family: 'Fredoka One', cursive;
   text-shadow: 2px 2px 0px #806600;
 }
 
@@ -194,7 +194,7 @@ body {
   font-weight: 600;
   color: #FDD3E3;
   margin-bottom: 1.5rem;
-  font-family: 'Baloo 2', sans-serif;
+  font-family: 'Fredoka One', cursive;
   text-shadow: 1px 1px 0px #D4289B;
 }
 
@@ -306,7 +306,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  font-family: 'Luckiest Guy', cursive;
+  font-family: 'Fredoka One', cursive;
   color: #FFDE59;
   text-shadow: 2px 2px 0px #806600;
 }
@@ -435,7 +435,7 @@ body {
   font-size: 2rem;
   margin-bottom: 1rem;
   color: var(--primary-color);
-  font-family: 'Luckiest Guy', cursive;
+  font-family: 'Fredoka One', cursive;
 }
 
 .ticket-price {
@@ -443,7 +443,7 @@ body {
   font-weight: 800;
   color: var(--success-color);
   margin-bottom: 2rem;
-  font-family: 'Luckiest Guy', cursive;
+  font-family: 'Fredoka One', cursive;
 }
 
 .ticket-features {
@@ -883,55 +883,4 @@ body {
   margin: 2rem auto;
 }
 
-.reservation-form .form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.reservation-form label {
-  font-weight: bold;
-  margin-bottom: 0.4rem;
-}
-
-.reservation-form input,
-.reservation-form textarea {
-  padding: 0.8rem;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-}
-
-.reservation-form textarea {
-  resize: vertical;
-  min-height: 100px;
-}
-
-.reservation-form .btn {
-  background-color: #ff3366;
-  color: white;
-  border: none;
-  padding: 0.9rem;
-  font-size: 1.1rem;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.reservation-form .btn:hover {
-  background-color: #e02e5c;
-}
-
-
-.zoom-button {
-  animation: pulse 2s infinite;
-  display: inline-block;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
-}
+.reservation
