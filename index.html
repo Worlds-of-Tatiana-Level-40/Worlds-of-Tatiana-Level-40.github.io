@@ -3,13 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>Anniversaire Comic Con 2025</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?v=1.0.1" />
   <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://tally.so/widgets/embed.js"></script>
+  <script src="https://tally.so/widgets/embed.js?v=1.0.1"></script>
 
 </head>
 <body>
@@ -318,16 +321,7 @@
 <!-- Script Tally -->
 <script async src="https://tally.so/widgets/embed.js"><>
 <script>
-  document.getElementById("open-tally-btn").addEventListener("click", function () {
-    Tally.openPopup("3xWvry", {
-      layout: "modal",
-      width: 700,
-      autoClose: 2000, // fermeture automatique 2 secondes après envoi
-      onSubmit: (payload) => {
-        console.log("Formulaire soumis :", payload);
-      }
-    });
-  });
+  // Script Tally déplacé dans script.js pour éviter les doublons
 </script>
 
 
@@ -365,7 +359,7 @@
   </div>
 
   <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-  <script src="script.js"></script>
+  <script src="script.js?v=1.0.1"></script>
   
   <script>
   const successSound = new Audio('media/sons/success.mp3');
