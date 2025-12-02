@@ -46,20 +46,6 @@ body {
   color: #806600;
   line-height: 1.6;
   overflow-x: hidden;
-  opacity: 0;
-  animation: pageLoad 1.5s ease-out forwards;
-}
-
-/* Animation d'ouverture de la page */
-@keyframes pageLoad {
-  0% {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
 }
 
 .container {
@@ -108,7 +94,8 @@ body {
 
 .logo-text {
   color: #FFDE59;
-  font-family: 'Luckiest Guy', cursive;
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 800;
   text-shadow: 
     -2px -2px 0 #D4289B,
     2px -2px 0 #D4289B,
@@ -202,7 +189,7 @@ body {
   font-weight: 800;
   margin-bottom: 0.5rem;
   color: #FFDE59;
-  font-family: 'Luckiest Guy', cursive;
+  font-family: 'Baloo 2', sans-serif;
   text-shadow: 
     -3px -3px 0 #D4289B,
     3px -3px 0 #D4289B,
@@ -212,7 +199,6 @@ body {
     3px 0 0 #D4289B,
     0 -3px 0 #D4289B,
     0 3px 0 #D4289B;
-  animation: titleGlow 2s ease-in-out infinite alternate;
 }
 
 .hero-title-sub {
@@ -221,7 +207,7 @@ body {
   font-weight: 600;
   color: #FFDE59;
   margin-bottom: 1.5rem;
-  font-family: 'Luckiest Guy', cursive;
+  font-family: 'Baloo 2', sans-serif;
   text-shadow: 
     -2px -2px 0 #D4289B,
     2px -2px 0 #D4289B,
@@ -353,7 +339,8 @@ body {
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  font-family: 'Luckiest Guy', cursive;
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 800;
   color: #FFDE59;
   text-shadow: 
     -3px -3px 0 #D4289B,
@@ -490,7 +477,8 @@ body {
   font-size: 2rem;
   margin-bottom: 1rem;
   color: #FFDE59;
-  font-family: 'Luckiest Guy', cursive;
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 800;
   text-shadow: 
     -2px -2px 0 #D4289B,
     2px -2px 0 #D4289B,
@@ -507,7 +495,7 @@ body {
   font-weight: 800;
   color: #FFDE59;
   margin-bottom: 2rem;
-  font-family: 'Luckiest Guy', cursive;
+  font-family: 'Baloo 2', sans-serif;
   text-shadow: 
     -3px -3px 0 #D4289B,
     3px -3px 0 #D4289B,
@@ -748,56 +736,6 @@ body {
 
 .footer-links a:hover {
   color: #0CC0DF;
-}
-
-/* Animation de lueur pour le titre principal */
-@keyframes titleGlow {
-  0% {
-    filter: drop-shadow(0 0 5px #FFDE59);
-  }
-  100% {
-    filter: drop-shadow(0 0 15px #FFDE59) drop-shadow(0 0 25px #FFDE59);
-  }
-}
-
-/* Animation d'apparition en cascade pour les éléments */
-.hero-content > * {
-  opacity: 0;
-  transform: translateY(30px);
-  animation: cascadeIn 0.8s ease-out forwards;
-}
-
-.hero-content > *:nth-child(1) { animation-delay: 0.3s; }
-.hero-content > *:nth-child(2) { animation-delay: 0.5s; }
-.hero-content > *:nth-child(3) { animation-delay: 0.7s; }
-.hero-content > *:nth-child(4) { animation-delay: 0.9s; }
-
-@keyframes cascadeIn {
-  0% {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Animation pour les icônes flottantes */
-.floating-elements {
-  opacity: 0;
-  animation: iconsAppear 1s ease-out 1.2s forwards;
-}
-
-@keyframes iconsAppear {
-  0% {
-    opacity: 0;
-    transform: scale(0.8);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
 }
 
 /* Animations */
