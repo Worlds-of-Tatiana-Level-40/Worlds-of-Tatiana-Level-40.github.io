@@ -16,7 +16,7 @@
   
   --gradient-primary: linear-gradient(135deg, #D4289B, #FDD3E3);
   --gradient-secondary: linear-gradient(135deg, #22DAC2, #B0E2F4);
-  --gradient-title: linear-gradient(135deg, #FFDE59, #FDD3E3);
+  --gradient-title: linear-gradient(135deg, #FFF176, #FDD3E3);
   
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
