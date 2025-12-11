@@ -887,11 +887,7 @@ body {
 
 @media (max-width: 480px) {
   .hero-title-main {
-    font-size: 2rem;
-  }
-  
-  .hero-title-sub {
-    font-size: 1.25rem;
+    font-size: 1.8rem;
   }
   
   .btn {
