@@ -387,7 +387,7 @@ body {
 }
 
 .timeline-time {
-  background: var(--gradient-primary);
+  background: #D4289B;
   color: white;
   padding: 0.5rem 1rem;
   border-radius: var(--border-radius);
