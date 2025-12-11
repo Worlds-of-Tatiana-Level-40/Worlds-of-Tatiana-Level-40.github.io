@@ -295,7 +295,7 @@ body {
 }
 
 .btn-primary {
-  background: var(--gradient-primary);
+  background: #d4289b;
   color: white;
   box-shadow: var(--shadow-lg);
 }
