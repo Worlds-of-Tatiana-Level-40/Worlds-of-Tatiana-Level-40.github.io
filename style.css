@@ -420,41 +420,63 @@ body {
   font-family: 'Baloo 2', sans-serif;
 }
 
-/* Plan */
-.plan-container {
+/* Cosplay Contest */
+.cosplay-info {
   max-width: 800px;
   margin: 0 auto;
 }
 
-.plan-image {
-  width: 100%;
-  height: auto;
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-xl);
-}
-
-.plan-zones {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  padding: 2rem;
-}
-
-.zone {
+.cosplay-card {
   background: rgba(255, 255, 255, 0.9);
-  padding: 2rem;
+  padding: 3rem;
   border-radius: var(--border-radius);
   text-align: center;
-  font-weight: 600;
-  border: 2px solid var(--accent-color);
-  transition: var(--transition);
+  box-shadow: var(--shadow-xl);
+  border: 2px solid var(--primary-color);
   color: #806600;
+}
+
+.cosplay-card h3 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #FFDE59;
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 800;
+  text-shadow: 
+    -2px -2px 0 #D4289B,
+    2px -2px 0 #D4289B,
+    -2px 2px 0 #D4289B,
+    2px 2px 0 #D4289B,
+    -2px 0 0 #D4289B,
+    2px 0 0 #D4289B,
+    0 -2px 0 #D4289B,
+    0 2px 0 #D4289B;
+}
+
+.cosplay-description {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  line-height: 1.6;
   font-family: 'Baloo 2', sans-serif;
 }
 
-.zone:hover {
-  border-color: var(--primary-color);
-  transform: translateY(-5px);
+.cosplay-features {
+  list-style: none;
+  margin-bottom: 2rem;
+  font-family: 'Baloo 2', sans-serif;
+}
+
+.cosplay-features li {
+  padding: 0.5rem 0;
+  color: #0CC0DF;
+}
+
+.cosplay-note {
+  background: rgba(99, 102, 241, 0.1);
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  margin-bottom: 2rem;
+  border-left: 4px solid var(--primary-color);
 }
 
 /* Ticket */
