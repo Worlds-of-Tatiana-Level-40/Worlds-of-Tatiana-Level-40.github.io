@@ -221,6 +221,7 @@ function showNotification(message, type = 'info') {
 // Gestion Tally avec cache busting
 const successSound = new Audio(`media/sons/success.mp3?v=${new Date().getTime()}`);
 
+// Bouton billetterie
 document.getElementById('open-tally-btn').addEventListener('click', (e) => {
   e.preventDefault();
   
@@ -248,6 +249,48 @@ document.getElementById('open-tally-btn').addEventListener('click', (e) => {
             console.log('Son non disponible');
           }
           showNotification('🎉 Réservation confirmée ! Merci !', 'success');
+        }
+      });
+    }
+  };
+  
+  // Remplacer l'ancien script
+  const oldScript = document.querySelector('script[src*="tally.so"]');
+  if (oldScript) {
+    oldScript.remove();
+  }
+  
+  document.head.appendChild(script);
+});
+
+// Bouton concours cosplay
+document.getElementById('open-cosplay-tally-btn').addEventListener('click', (e) => {
+  e.preventDefault();
+  
+  // Supprimer l'ancienne instance de Tally si elle existe
+  if (window.Tally && window.Tally.closePopup) {
+    window.Tally.closePopup();
+  }
+  
+  // Recharger le script Tally avec cache busting
+  const timestamp = new Date().getTime();
+  const script = document.createElement('script');
+  script.src = `https://tally.so/widgets/embed.js?v=${timestamp}`;
+  script.onload = () => {
+    // Ouvrir le popup une fois le script chargé
+    if (window.Tally && window.Tally.openPopup) {
+      window.Tally.openPopup('rj5bYv', {
+        layout: 'modal',
+        width: 700,
+        autoClose: 3000,
+        doNotShowAfterSubmit: true,
+        onSubmit: (payload) => {
+          try {
+            successSound.play();
+          } catch (error) {
+            console.log('Son non disponible');
+          }
+          showNotification('🎭 Inscription confirmée ! À bientôt sur scène !', 'success');
         }
       });
     }
