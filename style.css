@@ -420,6 +420,29 @@ body {
   font-family: 'Baloo 2', sans-serif;
 }
 
+/* Day Program */
+.day-program {
+  margin-bottom: 4rem;
+}
+
+.day-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #FFDE59;
+  font-family: 'Baloo 2', sans-serif;
+  text-shadow: 
+    -2px -2px 0 #D4289B,
+    2px -2px 0 #D4289B,
+    -2px 2px 0 #D4289B,
+    2px 2px 0 #D4289B,
+    -2px 0 0 #D4289B,
+    2px 0 0 #D4289B,
+    0 -2px 0 #D4289B,
+    0 2px 0 #D4289B;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
 /* Cosplay Contest */
 .cosplay-info {
   max-width: 800px;
