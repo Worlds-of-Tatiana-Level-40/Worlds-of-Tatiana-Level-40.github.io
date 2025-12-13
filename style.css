@@ -643,7 +643,7 @@ body {
 }
 
 .info-card p {
-  text-align: left;
+  text-align: left !important;
   font-family: 'Baloo 2', sans-serif;
 }
 
