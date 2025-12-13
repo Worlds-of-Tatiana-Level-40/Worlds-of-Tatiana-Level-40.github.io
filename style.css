@@ -1103,6 +1103,11 @@ body {
   display: inline-block;
 }
 
+.info-card a:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 @keyframes pulse {
   0%, 100% {
     transform: scale(1);
