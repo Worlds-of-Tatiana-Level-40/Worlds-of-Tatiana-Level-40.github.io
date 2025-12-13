@@ -305,6 +305,48 @@ document.getElementById('open-cosplay-tally-btn').addEventListener('click', (e) 
   document.head.appendChild(script);
 });
 
+// Bouton newsletter
+document.getElementById('open-newsletter-tally-btn').addEventListener('click', (e) => {
+  e.preventDefault();
+  
+  // Supprimer l'ancienne instance de Tally si elle existe
+  if (window.Tally && window.Tally.closePopup) {
+    window.Tally.closePopup();
+  }
+  
+  // Recharger le script Tally avec cache busting
+  const timestamp = new Date().getTime();
+  const script = document.createElement('script');
+  script.src = `https://tally.so/widgets/embed.js?v=${timestamp}`;
+  script.onload = () => {
+    // Ouvrir le popup une fois le script chargé
+    if (window.Tally && window.Tally.openPopup) {
+      window.Tally.openPopup('kdljEo', {
+        layout: 'modal',
+        width: 700,
+        autoClose: 3000,
+        doNotShowAfterSubmit: true,
+        onSubmit: (payload) => {
+          try {
+            successSound.play();
+          } catch (error) {
+            console.log('Son non disponible');
+          }
+          showNotification('📧 Inscription newsletter confirmée ! Merci !', 'success');
+        }
+      });
+    }
+  };
+  
+  // Remplacer l'ancien script
+  const oldScript = document.querySelector('script[src*="tally.so"]');
+  if (oldScript) {
+    oldScript.remove();
+  }
+  
+  document.head.appendChild(script);
+});
+
 // Animation rainbow pour l'easter egg
 const style = document.createElement('style');
 style.textContent = `
