@@ -646,9 +646,8 @@ body {
   font-family: 'Baloo 2', sans-serif;
 }
 
-.info-card g {
-  text-align: left !important;
-  font-family: 'Baloo 2', sans-serif;
+.info-card .text-left {
+  text-align: left;
 }
 
 /* Newsletter */
