@@ -1,6 +1,4 @@
-// ==========================
-// AOS
-// ==========================
+// Initialisation AOS
 AOS.init({
   duration: 800,
   easing: 'ease-in-out',
@@ -8,9 +6,7 @@ AOS.init({
   offset: 100
 });
 
-// ==========================
-// MENU BURGER
-// ==========================
+// Menu burger
 const burgerMenu = document.querySelector('.burger-menu');
 const navMenu = document.querySelector('.nav-menu');
 
@@ -20,6 +16,7 @@ if (burgerMenu && navMenu) {
     navMenu.classList.toggle('active');
   });
 
+  // Fermer le menu en cliquant sur un lien
   document.querySelectorAll('.nav-link').forEach(link => {
     link.addEventListener('click', () => {
       burgerMenu.classList.remove('active');
@@ -28,185 +25,334 @@ if (burgerMenu && navMenu) {
   });
 }
 
-// ==========================
-// SMOOTH SCROLL
-// ==========================
+// Smooth scroll pour les liens d'ancrage
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   anchor.addEventListener('click', function (e) {
     e.preventDefault();
     const target = document.querySelector(this.getAttribute('href'));
-    if (!target) return;
-
-    const headerHeight = document.querySelector('.header')?.offsetHeight || 0;
-    const targetPosition = target.offsetTop - headerHeight;
-
-    window.scrollTo({
-      top: targetPosition,
-      behavior: 'smooth'
-    });
+    if (target) {
+      const headerHeight = document.querySelector('.header').offsetHeight;
+      const targetPosition = target.offsetTop - headerHeight;
+      
+      window.scrollTo({
+        top: targetPosition,
+        behavior: 'smooth'
+      });
+    }
   });
 });
 
-// ==========================
-// LIGHTBOX
-// ==========================
+// Galerie et Lightbox
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightbox-img');
 const lightboxClose = document.querySelector('.lightbox-close');
 
-function openLightbox(src) {
-  if (!lightbox || !lightboxImg) return;
-  lightboxImg.src = src;
-  lightbox.style.display = 'flex';
-  document.body.style.overflow = 'hidden';
-}
-
-function closeLightbox() {
-  if (!lightbox) return;
-  lightbox.style.display = 'none';
-  document.body.style.overflow = 'auto';
-}
-
-lightboxClose?.addEventListener('click', closeLightbox);
-
-lightbox?.addEventListener('click', (e) => {
-  if (e.target === lightbox) closeLightbox();
-});
-
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') closeLightbox();
-});
-
-// ==========================
-// GALERIE (images.json)
-// ==========================
+// Fonction pour charger les images de la galerie
 function loadGalleryImages() {
   const gallery = document.getElementById('gallery');
   if (!gallery) return;
 
-  fetch('media/galerie/images.json')
-    .then(res => res.json())
-    .then(images => {
-      images.forEach(filename => {
-        const img = document.createElement('img');
-        img.src = `media/galerie/${filename}?v=${Date.now()}`;
-        img.alt = 'Image galerie';
-        img.addEventListener('click', () => openLightbox(img.src));
-        gallery.appendChild(img);
+  const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+  const imagePromises = [];
+
+  // Essayer de charger les images de 1 à 20
+  for (let i = 1; i <= 20; i++) {
+    for (const ext of imageExtensions) {
+      const timestamp = new Date().getTime();
+      const imagePath = `media/galerie/image${i}.${ext}?v=${timestamp}`;
+      
+      const img = new Image();
+      img.src = imagePath;
+      
+      const promise = new Promise((resolve) => {
+        img.onload = () => resolve({ src: imagePath, exists: true });
+        img.onerror = () => resolve({ src: imagePath, exists: false });
       });
-    })
-    .catch(err => {
-      console.error('Erreur galerie :', err);
+      
+      imagePromises.push(promise);
+    }
+  }
+
+  Promise.all(imagePromises).then(results => {
+    const existingImages = results.filter(result => result.exists);
+    
+    existingImages.forEach(imageData => {
+      const img = document.createElement('img');
+      img.src = imageData.src;
+      img.alt = `Image galerie`;
+      img.addEventListener('click', () => openLightbox(imageData.src));
+      gallery.appendChild(img);
     });
+  });
 }
 
-document.addEventListener('DOMContentLoaded', loadGalleryImages);
+// Ouvrir la lightbox
+function openLightbox(src) {
+  if (lightbox && lightboxImg) {
+    lightboxImg.src = src;
+    lightbox.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+}
 
-// ==========================
-// PARALLAX HERO
-// ==========================
-window.addEventListener('scroll', () => {
-  const heroBg = document.querySelector('.hero-bg');
-  if (!heroBg) return;
-  heroBg.style.transform = `translateY(${window.scrollY * 0.5}px)`;
-});
+// Fermer la lightbox
+function closeLightbox() {
+  if (lightbox) {
+    lightbox.style.display = 'none';
+    document.body.style.overflow = 'auto';
+  }
+}
 
-// ==========================
-// ELEMENTS FLOTTANTS
-// ==========================
-document.querySelectorAll('.floating-element').forEach((el, i) => {
-  el.style.animationDelay = `${i * 0.4}s`;
-});
+// Event listeners pour la lightbox
+if (lightboxClose) {
+  lightboxClose.addEventListener('click', closeLightbox);
+}
 
-// ==========================
-// SOUS-SECTIONS ANIMATIONS
-// ==========================
-document.querySelectorAll('.toggle-subsection').forEach(toggle => {
-  toggle.addEventListener('click', () => {
-    const parent = toggle.closest('.animation-subsection');
-    document.querySelectorAll('.animation-subsection').forEach(s => s.classList.remove('active'));
-    parent.classList.toggle('active');
+if (lightbox) {
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) {
+      closeLightbox();
+    }
   });
-});
+}
 
-// ==========================
-// KONAMI CODE
-// ==========================
-let konami = [];
-const konamiSeq = [
-  'ArrowUp','ArrowUp','ArrowDown','ArrowDown',
-  'ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','KeyB','KeyA'
-];
-
-document.addEventListener('keydown', e => {
-  konami.push(e.code);
-  if (konami.length > konamiSeq.length) konami.shift();
-
-  if (JSON.stringify(konami) === JSON.stringify(konamiSeq)) {
-    showNotification('🎮 Code Konami activé !', 'success');
-    document.body.style.animation = 'rainbow 2s infinite';
-    setTimeout(() => document.body.style.animation = '', 5000);
+// Échapper pour fermer la lightbox
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeLightbox();
   }
 });
 
-// ==========================
-// NOTIFICATIONS
-// ==========================
+// Charger les images au chargement de la page
+document.addEventListener('DOMContentLoaded', loadGalleryImages);
+
+// Effet parallax léger sur le hero
+window.addEventListener('scroll', () => {
+  const scrolled = window.pageYOffset;
+  const heroBackground = document.querySelector('.hero-bg');
+  
+  if (heroBackground) {
+    heroBackground.style.transform = `translateY(${scrolled * 0.5}px)`;
+  }
+});
+
+// Animation des éléments flottants
+document.querySelectorAll('.floating-element').forEach((element, index) => {
+  element.style.animationDelay = `${index * 0.5}s`;
+});
+
+// Gestion des sous-catégories d'animations
+document.querySelectorAll('.toggle-subsection').forEach(toggle => {
+  toggle.addEventListener('click', function() {
+    const subsection = this.closest('.animation-subsection');
+    const isActive = subsection.classList.contains('active');
+    
+    // Fermer toutes les autres sous-sections
+    document.querySelectorAll('.animation-subsection').forEach(section => {
+      section.classList.remove('active');
+    });
+    
+    // Ouvrir/fermer la sous-section cliquée
+    if (!isActive) {
+      subsection.classList.add('active');
+    }
+  });
+});
+
+// Easter egg - Code Konami
+let konamiCode = [];
+const konamiSequence = [
+  'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown',
+  'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight',
+  'KeyB', 'KeyA'
+];
+
+document.addEventListener('keydown', (e) => {
+  konamiCode.push(e.code);
+  
+  if (konamiCode.length > konamiSequence.length) {
+    konamiCode.shift();
+  }
+  
+  if (JSON.stringify(konamiCode) === JSON.stringify(konamiSequence)) {
+    showNotification('🎮 Code Konami activé ! Bonus geek débloqué !', 'success');
+    // Ajouter un effet spécial
+    document.body.style.animation = 'rainbow 2s infinite';
+    setTimeout(() => {
+      document.body.style.animation = '';
+    }, 5000);
+  }
+});
+
+// Système de notifications
 function showNotification(message, type = 'info') {
-  const notif = document.createElement('div');
-  notif.textContent = message;
-  notif.className = `notification notification-${type}`;
-  notif.style.cssText = `
-    position:fixed;top:20px;right:20px;
-    background:var(--gradient-primary);
-    color:white;padding:1rem 2rem;
-    border-radius:12px;z-index:10000;
-    transform:translateX(120%);
-    transition:0.3s;
+  const notification = document.createElement('div');
+  notification.className = `notification notification-${type}`;
+  notification.textContent = message;
+  
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--gradient-primary);
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    z-index: 10000;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
   `;
-  document.body.appendChild(notif);
-  setTimeout(() => notif.style.transform = 'translateX(0)', 100);
+  
+  document.body.appendChild(notification);
+  
   setTimeout(() => {
-    notif.style.transform = 'translateX(120%)';
-    setTimeout(() => notif.remove(), 300);
+    notification.style.transform = 'translateX(0)';
+  }, 100);
+  
+  setTimeout(() => {
+    notification.style.transform = 'translateX(100%)';
+    setTimeout(() => {
+      document.body.removeChild(notification);
+    }, 300);
   }, 3000);
 }
 
-// ==========================
-// TALLY – GALERIE PHOTOS
-// ==========================
-const successSound = new Audio(`media/sons/success.mp3?v=${Date.now()}`);
+// Gestion Tally avec cache busting
+const successSound = new Audio(`media/sons/success.mp3?v=${new Date().getTime()}`);
 
-document.getElementById('open-gallery-tally-btn')?.addEventListener('click', e => {
+// Bouton billetterie
+document.getElementById('open-tally-btn').addEventListener('click', (e) => {
   e.preventDefault();
-
-  if (window.Tally?.closePopup) window.Tally.closePopup();
-
+  
+  // Supprimer l'ancienne instance de Tally si elle existe
+  if (window.Tally && window.Tally.closePopup) {
+    window.Tally.closePopup();
+  }
+  
+  // Recharger le script Tally avec cache busting
+  const timestamp = new Date().getTime();
   const script = document.createElement('script');
-  script.src = `https://tally.so/widgets/embed.js?v=${Date.now()}`;
+  script.src = `https://tally.so/widgets/embed.js?v=${timestamp}`;
   script.onload = () => {
-    window.Tally.openPopup('TON_ID_TALLY_GALERIE', {
-      layout: 'modal',
-      width: 700,
-      doNotShowAfterSubmit: false,
-      onSubmit: () => {
-        successSound.play().catch(() => {});
-        showNotification('📸 Merci pour ta photo !', 'success');
-      }
-    });
+    // Ouvrir le popup une fois le script chargé
+    if (window.Tally && window.Tally.openPopup) {
+      window.Tally.openPopup('3xWvry', {
+        layout: 'modal',
+        width: 700,
+        autoClose: 3000,
+        doNotShowAfterSubmit: true,
+        onSubmit: (payload) => {
+          try {
+            successSound.play();
+          } catch (error) {
+            console.log('Son non disponible');
+          }
+          showNotification('🎉 Réservation confirmée ! Merci !', 'success');
+        }
+      });
+    }
   };
-
-  document.querySelector('script[src*="tally.so"]')?.remove();
+  
+  // Remplacer l'ancien script
+  const oldScript = document.querySelector('script[src*="tally.so"]');
+  if (oldScript) {
+    oldScript.remove();
+  }
+  
   document.head.appendChild(script);
 });
 
-// ==========================
-// STYLE RAINBOW
-// ==========================
+// Bouton concours cosplay
+document.getElementById('open-cosplay-tally-btn').addEventListener('click', (e) => {
+  e.preventDefault();
+  
+  // Supprimer l'ancienne instance de Tally si elle existe
+  if (window.Tally && window.Tally.closePopup) {
+    window.Tally.closePopup();
+  }
+  
+  // Recharger le script Tally avec cache busting
+  const timestamp = new Date().getTime();
+  const script = document.createElement('script');
+  script.src = `https://tally.so/widgets/embed.js?v=${timestamp}`;
+  script.onload = () => {
+    // Ouvrir le popup une fois le script chargé
+    if (window.Tally && window.Tally.openPopup) {
+      window.Tally.openPopup('rj5bYv', {
+        layout: 'modal',
+        width: 700,
+        autoClose: 3000,
+        doNotShowAfterSubmit: true,
+        onSubmit: (payload) => {
+          try {
+            successSound.play();
+          } catch (error) {
+            console.log('Son non disponible');
+          }
+          showNotification('🎭 Inscription confirmée ! À bientôt sur scène !', 'success');
+        }
+      });
+    }
+  };
+  
+  // Remplacer l'ancien script
+  const oldScript = document.querySelector('script[src*="tally.so"]');
+  if (oldScript) {
+    oldScript.remove();
+  }
+  
+  document.head.appendChild(script);
+});
+
+// Bouton newsletter
+document.getElementById('open-newsletter-tally-btn').addEventListener('click', (e) => {
+  e.preventDefault();
+  
+  // Supprimer l'ancienne instance de Tally si elle existe
+  if (window.Tally && window.Tally.closePopup) {
+    window.Tally.closePopup();
+  }
+  
+  // Recharger le script Tally avec cache busting
+  const timestamp = new Date().getTime();
+  const script = document.createElement('script');
+  script.src = `https://tally.so/widgets/embed.js?v=${timestamp}`;
+  script.onload = () => {
+    // Ouvrir le popup une fois le script chargé
+    if (window.Tally && window.Tally.openPopup) {
+      window.Tally.openPopup('kdljEo', {
+        layout: 'modal',
+        width: 700,
+        autoClose: 3000,
+        doNotShowAfterSubmit: true,
+        onSubmit: (payload) => {
+          try {
+            successSound.play();
+          } catch (error) {
+            console.log('Son non disponible');
+          }
+          showNotification('📧 Inscription newsletter confirmée ! Merci !', 'success');
+        }
+      });
+    }
+  };
+  
+  // Remplacer l'ancien script
+  const oldScript = document.querySelector('script[src*="tally.so"]');
+  if (oldScript) {
+    oldScript.remove();
+  }
+  
+  document.head.appendChild(script);
+});
+
+// Animation rainbow pour l'easter egg
 const style = document.createElement('style');
 style.textContent = `
-@keyframes rainbow {
-  from { filter:hue-rotate(0deg); }
-  to { filter:hue-rotate(360deg); }
-}`;
+  @keyframes rainbow {
+    0% { filter: hue-rotate(0deg); }
+    100% { filter: hue-rotate(360deg); }
+  }
+`;
 document.head.appendChild(style);
