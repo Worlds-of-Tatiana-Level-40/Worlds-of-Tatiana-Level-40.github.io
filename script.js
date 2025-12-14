@@ -55,36 +55,26 @@ function loadGalleryImages() {
   const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
   const imagePromises = [];
 
-  // Essayer de charger les images de 1 à 20
-  for (let i = 1; i <= 20; i++) {
-    for (const ext of imageExtensions) {
-      const timestamp = new Date().getTime();
-      const imagePath = `media/galerie/image${i}.${ext}?v=${timestamp}`;
-      
-      const img = new Image();
-      img.src = imagePath;
-      
-      const promise = new Promise((resolve) => {
-        img.onload = () => resolve({ src: imagePath, exists: true });
-        img.onerror = () => resolve({ src: imagePath, exists: false });
-      });
-      
-      imagePromises.push(promise);
-    }
-  }
 
-  Promise.all(imagePromises).then(results => {
-    const existingImages = results.filter(result => result.exists);
-    
-    existingImages.forEach(imageData => {
-      const img = document.createElement('img');
-      img.src = imageData.src;
-      img.alt = `Image galerie`;
-      img.addEventListener('click', () => openLightbox(imageData.src));
-      gallery.appendChild(img);
-    });
-  });
+// Fonction pour charger les images de la galerie depuis JSON
+function loadGalleryImages() {
+  const gallery = document.getElementById('gallery');
+  if (!gallery) return;
+
+  fetch('media/galerie/images.json')
+    .then(response => response.json())
+    .then(images => {
+      images.forEach(filename => {
+        const img = document.createElement('img');
+        img.src = `media/galerie/${filename}?v=${new Date().getTime()}`;
+        img.alt = 'Image galerie';
+        img.addEventListener('click', () => openLightbox(img.src));
+        gallery.appendChild(img);
+      });
+    })
+    .catch(err => console.error('Erreur chargement galerie :', err));
 }
+
 
 // Ouvrir la lightbox
 function openLightbox(src) {
