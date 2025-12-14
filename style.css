@@ -1120,3 +1120,38 @@ body {
     transform: scale(1.05);
   }
 }
+
+
+/* ===========================
+   🦔 Easter Egg Sonic
+=========================== */
+
+.sonic-runner {
+  position: fixed;
+  bottom: 60px;
+  width: 140px;
+  pointer-events: none;
+  z-index: 99999;
+}
+
+.sonic-from-left {
+  left: -200px;
+  animation: sonicRunRight 2.5s linear forwards;
+}
+
+.sonic-from-right {
+  right: -200px;
+  transform: scaleX(-1);
+  animation: sonicRunLeft 2.5s linear forwards;
+}
+
+@keyframes sonicRunRight {
+  from { left: -200px; }
+  to { left: 110%; }
+}
+
+@keyframes sonicRunLeft {
+  from { right: -200px; }
+  to { right: 110%; }
+}
+
