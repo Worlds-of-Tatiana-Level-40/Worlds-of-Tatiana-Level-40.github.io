@@ -52,38 +52,217 @@ function loadGalleryImages() {
   const gallery = document.getElementById('gallery');
   if (!gallery) return;
 
+  // Vider la galerie avant de recharger
+  gallery.innerHTML = '';
+
+  // Essayer de charger le fichier JSON avec la liste des images
+  const timestamp = new Date().getTime();
+  fetch(`media/galerie/images.json?v=${timestamp}`)
+    .then(response => response.json())
+    .then(imageList => {
+      if (imageList && imageList.length > 0) {
+        displayGalleryFromList(imageList);
+      } else {
+        loadImagesWithFallback();
+      }
+    })
+    .catch(() => {
+      // Si le fichier JSON n'existe pas, essayer la méthode de fallback
+      loadImagesWithFallback();
+    });
+}
+
+// Fonction pour charger les images depuis une liste JSON
+function displayGalleryFromList(imageList) {
+  const gallery = document.getElementById('gallery');
+  if (!gallery) return;
+  
+  const timestamp = new Date().getTime();
+  const imagePromises = [];
+  
+  imageList.forEach((imageName, index) => {
+    const imagePath = `media/galerie/${imageName}?v=${timestamp}`;
+    
+    const img = new Image();
+    img.src = imagePath;
+    
+    const promise = new Promise((resolve) => {
+      img.onload = () => resolve({ 
+        src: imagePath, 
+        exists: true, 
+        name: imageName,
+        index: index 
+      });
+      img.onerror = () => resolve({ 
+        src: imagePath, 
+        exists: false, 
+        name: imageName,
+        index: index 
+      });
+    });
+    
+    imagePromises.push(promise);
+  });
+  
+  // Traitement par batch pour de meilleures performances
+  const batchSize = 20;
+  processBatchesFromList(imagePromises, batchSize);
+}
+
+// Fonction pour traiter les images par batch depuis une liste
+function processBatchesFromList(imagePromises, batchSize) {
+  const gallery = document.getElementById('gallery');
+  if (!gallery) return;
+  
+  let processedCount = 0;
+  let validImages = [];
+  
+  const processBatch = (startIndex) => {
+    const batch = imagePromises.slice(startIndex, startIndex + batchSize);
+    
+    if (batch.length === 0) {
+      // Tous les batches traités
+      if (validImages.length === 0) {
+        showNoImagesMessage();
+      } else {
+        showNotification(`📸 ${validImages.length} photo(s) chargée(s) !`, 'info');
+      }
+      return;
+    }
+    
+    Promise.all(batch).then(results => {
+      results.forEach((result, index) => {
+        if (result.exists) {
+          validImages.push(result);
+          
+          const img = document.createElement('img');
+          img.src = result.src;
+          img.alt = `Photo souvenir - ${result.name}`;
+          img.loading = 'lazy';
+          img.style.opacity = '0';
+          img.style.transition = 'opacity 0.3s ease';
+          
+          // Animation d'apparition progressive
+          img.onload = () => {
+            setTimeout(() => {
+              img.style.opacity = '1';
+            }, (processedCount + index) * 30);
+          };
+          
+          img.addEventListener('click', () => openLightbox(result.src));
+          gallery.appendChild(img);
+        }
+      });
+      
+      processedCount += results.length;
+      
+      // Traiter le batch suivant après un petit délai
+      setTimeout(() => {
+        processBatch(startIndex + batchSize);
+      }, 100);
+    });
+  };
+  
+  processBatch(0);
+}
+
+// Fonction de fallback pour charger les images sans JSON
+function loadImagesWithFallback() {
+  const gallery = document.getElementById('gallery');
+  if (!gallery) return;
+  
+  // Essayer de détecter automatiquement les images communes
+  const commonNames = [
+    'photo1.jpg', 'photo2.jpg', 'photo3.jpg', 'photo4.jpg', 'photo5.jpg',
+    'image1.jpg', 'image2.jpg', 'image3.jpg', 'image4.jpg', 'image5.jpg',
+    'img1.jpg', 'img2.jpg', 'img3.jpg', 'img4.jpg', 'img5.jpg',
+    'souvenir1.jpg', 'souvenir2.jpg', 'souvenir3.jpg',
+    'pic1.jpg', 'pic2.jpg', 'pic3.jpg'
+  ];
+  
   const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
   const imagePromises = [];
-
-  // Essayer de charger les images de 1 à 20
-  for (let i = 1; i <= 20; i++) {
-    for (const ext of imageExtensions) {
-      const timestamp = new Date().getTime();
-      const imagePath = `media/galerie/image${i}.${ext}?v=${timestamp}`;
+  const timestamp = new Date().getTime();
+  
+  // Tester les noms communs avec différentes extensions
+  commonNames.forEach((baseName, index) => {
+    const nameWithoutExt = baseName.split('.')[0];
+    imageExtensions.forEach(ext => {
+      const imagePath = `media/galerie/${nameWithoutExt}.${ext}?v=${timestamp}`;
       
       const img = new Image();
       img.src = imagePath;
       
       const promise = new Promise((resolve) => {
-        img.onload = () => resolve({ src: imagePath, exists: true });
-        img.onerror = () => resolve({ src: imagePath, exists: false });
+        img.onload = () => resolve({ 
+          src: imagePath, 
+          exists: true, 
+          name: `${nameWithoutExt}.${ext}`,
+          index: index 
+        });
+        img.onerror = () => resolve({ 
+          src: imagePath, 
+          exists: false, 
+          name: `${nameWithoutExt}.${ext}`,
+          index: index 
+        });
       });
       
       imagePromises.push(promise);
-    }
-  }
-
-  Promise.all(imagePromises).then(results => {
-    const existingImages = results.filter(result => result.exists);
-    
-    existingImages.forEach(imageData => {
-      const img = document.createElement('img');
-      img.src = imageData.src;
-      img.alt = `Image galerie`;
-      img.addEventListener('click', () => openLightbox(imageData.src));
-      gallery.appendChild(img);
     });
   });
+  
+  Promise.all(imagePromises).then(results => {
+    const validImages = results
+      .filter(result => result.exists)
+      .sort((a, b) => a.index - b.index);
+    
+    if (validImages.length === 0) {
+      showNoImagesMessage();
+    } else {
+      validImages.forEach((imageData, index) => {
+        const img = document.createElement('img');
+        img.src = imageData.src;
+        img.alt = `Photo souvenir - ${imageData.name}`;
+        img.loading = 'lazy';
+        img.style.opacity = '0';
+        img.style.transition = 'opacity 0.3s ease';
+        
+        img.onload = () => {
+          setTimeout(() => {
+            img.style.opacity = '1';
+          }, index * 50);
+        };
+        
+        img.addEventListener('click', () => openLightbox(imageData.src));
+        gallery.appendChild(img);
+      });
+      
+      showNotification(`📸 ${validImages.length} photo(s) chargée(s) !`, 'info');
+    }
+  });
+}
+
+// Fonction pour afficher le message "aucune image"
+function showNoImagesMessage() {
+  const gallery = document.getElementById('gallery');
+  if (!gallery) return;
+  
+  const noImagesMsg = document.createElement('div');
+  noImagesMsg.style.cssText = `
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-primary);
+    font-family: 'Baloo 2', sans-serif;
+    font-size: 1.2rem;
+  `;
+  noImagesMsg.innerHTML = `
+    <div style="font-size: 3rem; margin-bottom: 1rem;">📸</div>
+    <p>Aucune photo pour le moment...</p>
+    <p style="font-size: 0.9rem; opacity: 0.8;">Soyez les premiers à partager vos souvenirs !</p>
+  `;
+  gallery.appendChild(noImagesMsg);
 }
 
 // Ouvrir la lightbox
@@ -333,6 +512,54 @@ document.getElementById('open-newsletter-tally-btn').addEventListener('click', (
             console.log('Son non disponible');
           }
           showNotification('📧 Inscription newsletter confirmée ! Merci !', 'success');
+        }
+      });
+    }
+  };
+  
+  // Remplacer l'ancien script
+  const oldScript = document.querySelector('script[src*="tally.so"]');
+  if (oldScript) {
+    oldScript.remove();
+  }
+  
+  document.head.appendChild(script);
+});
+
+// Bouton envoi photos (peut être cliqué plusieurs fois)
+document.getElementById('open-photos-tally-btn').addEventListener('click', (e) => {
+  e.preventDefault();
+  
+  // Supprimer l'ancienne instance de Tally si elle existe
+  if (window.Tally && window.Tally.closePopup) {
+    window.Tally.closePopup();
+  }
+  
+  // Recharger le script Tally avec cache busting
+  const timestamp = new Date().getTime();
+  const script = document.createElement('script');
+  script.src = `https://tally.so/widgets/embed.js?v=${timestamp}`;
+  script.onload = () => {
+    // Ouvrir le popup une fois le script chargé
+    if (window.Tally && window.Tally.openPopup) {
+      window.Tally.openPopup('A7zMoz', {
+        layout: 'modal',
+        width: 700,
+        autoClose: 2000,
+        doNotShowAfterSubmit: false, // Permet de soumettre plusieurs fois
+        onSubmit: (payload) => {
+          try {
+            successSound.play();
+          } catch (error) {
+            console.log('Son non disponible');
+          }
+          showNotification('📸 Photos envoyées ! Merci pour le partage !', 'success');
+          
+          // Recharger la galerie après un délai pour voir les nouvelles photos
+          setTimeout(() => {
+            loadGalleryImages();
+            showNotification('🔄 Galerie actualisée !', 'info');
+          }, 3000);
         }
       });
     }
