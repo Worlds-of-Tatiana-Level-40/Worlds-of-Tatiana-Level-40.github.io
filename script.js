@@ -58,19 +58,27 @@ function loadGalleryImages() {
   // Essayer de charger le fichier JSON avec la liste des images
   const timestamp = new Date().getTime();
   fetch(`media/galerie/images.json?v=${timestamp}`)
-    .then(response => response.json())
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('JSON not found or network error');
+      }
+      return response.json();
+    })
     .then(imageList => {
       if (imageList && imageList.length > 0) {
         displayGalleryFromList(imageList);
       } else {
-        loadImagesWithFallback();
+        // Afficher un message si le JSON est trouvé mais est vide
+        showNoImagesMessage(); 
       }
     })
-    .catch(() => {
-      // Si le fichier JSON n'existe pas, essayer la méthode de fallback
-      loadImagesWithFallback();
+    .catch(error => {
+      // Si le fichier JSON n'existe pas ou s'il y a une erreur réseau
+      console.error("Erreur de chargement du JSON de la galerie :", error);
+      showNoImagesMessage(); // On affiche directement le message d'absence d'images
     });
 }
+
 
 // Fonction pour charger les images depuis une liste JSON
 function displayGalleryFromList(imageList) {
@@ -166,82 +174,6 @@ function processBatchesFromList(imagePromises, batchSize) {
   processBatch(0);
 }
 
-// Fonction de fallback pour charger les images sans JSON
-function loadImagesWithFallback() {
-  const gallery = document.getElementById('gallery');
-  if (!gallery) return;
-  
-  // Essayer de détecter automatiquement les images communes
-  const commonNames = [
-    'photo1.jpg', 'photo2.jpg', 'photo3.jpg', 'photo4.jpg', 'photo5.jpg',
-    'image1.jpg', 'image2.jpg', 'image3.jpg', 'image4.jpg', 'image5.jpg',
-    'img1.jpg', 'img2.jpg', 'img3.jpg', 'img4.jpg', 'img5.jpg',
-    'souvenir1.jpg', 'souvenir2.jpg', 'souvenir3.jpg',
-    'pic1.jpg', 'pic2.jpg', 'pic3.jpg'
-  ];
-  
-  const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-  const imagePromises = [];
-  const timestamp = new Date().getTime();
-  
-  // Tester les noms communs avec différentes extensions
-  commonNames.forEach((baseName, index) => {
-    const nameWithoutExt = baseName.split('.')[0];
-    imageExtensions.forEach(ext => {
-      const imagePath = `media/galerie/${nameWithoutExt}.${ext}?v=${timestamp}`;
-      
-      const img = new Image();
-      img.src = imagePath;
-      
-      const promise = new Promise((resolve) => {
-        img.onload = () => resolve({ 
-          src: imagePath, 
-          exists: true, 
-          name: `${nameWithoutExt}.${ext}`,
-          index: index 
-        });
-        img.onerror = () => resolve({ 
-          src: imagePath, 
-          exists: false, 
-          name: `${nameWithoutExt}.${ext}`,
-          index: index 
-        });
-      });
-      
-      imagePromises.push(promise);
-    });
-  });
-  
-  Promise.all(imagePromises).then(results => {
-    const validImages = results
-      .filter(result => result.exists)
-      .sort((a, b) => a.index - b.index);
-    
-    if (validImages.length === 0) {
-      showNoImagesMessage();
-    } else {
-      validImages.forEach((imageData, index) => {
-        const img = document.createElement('img');
-        img.src = imageData.src;
-        img.alt = `Photo souvenir - ${imageData.name}`;
-        img.loading = 'lazy';
-        img.style.opacity = '0';
-        img.style.transition = 'opacity 0.3s ease';
-        
-        img.onload = () => {
-          setTimeout(() => {
-            img.style.opacity = '1';
-          }, index * 50);
-        };
-        
-        img.addEventListener('click', () => openLightbox(imageData.src));
-        gallery.appendChild(img);
-      });
-      
-      showNotification(`📸 ${validImages.length} photo(s) chargée(s) !`, 'info');
-    }
-  });
-}
 
 // Fonction pour afficher le message "aucune image"
 function showNoImagesMessage() {
