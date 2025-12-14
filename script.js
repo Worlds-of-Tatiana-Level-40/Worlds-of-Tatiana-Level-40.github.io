@@ -347,6 +347,50 @@ document.getElementById('open-newsletter-tally-btn').addEventListener('click', (
   document.head.appendChild(script);
 });
 
+
+// Bouton galerie pour envoyer des photos
+document.getElementById('open-gallery-tally-btn').addEventListener('click', (e) => {
+  e.preventDefault();
+  
+  // Fermer l'ancienne instance de Tally si elle existe
+  if (window.Tally && window.Tally.closePopup) {
+    window.Tally.closePopup();
+  }
+  
+  // Charger le script Tally avec cache busting
+  const timestamp = new Date().getTime();
+  const script = document.createElement('script');
+  script.src = `https://tally.so/widgets/embed.js?v=${timestamp}`;
+  
+  script.onload = () => {
+    if (window.Tally && window.Tally.openPopup) {
+      window.Tally.openPopup('A7zMoz', { // <-- Remplace TON_FORM_ID par l'ID de ton formulaire Tally
+        layout: 'modal',
+        width: 700,
+        autoClose: 3000,
+        doNotShowAfterSubmit: true,
+        onSubmit: (payload) => {
+          try {
+            successSound.play(); // joue le son de confirmation
+          } catch (error) {
+            console.log('Son non disponible');
+          }
+          showNotification('📸 Merci pour tes photos !', 'success');
+        }
+      });
+    }
+  };
+  
+  // Remplacer l'ancien script si présent
+  const oldScript = document.querySelector('script[src*="tally.so"]');
+  if (oldScript) oldScript.remove();
+  
+  document.head.appendChild(script);
+});
+
+
+
+
 // Animation rainbow pour l'easter egg
 const style = document.createElement('style');
 style.textContent = `
