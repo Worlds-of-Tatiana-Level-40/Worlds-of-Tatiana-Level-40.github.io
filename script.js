@@ -358,32 +358,45 @@ style.textContent = `
 document.head.appendChild(style);
 
 
-/* ===========================
-   🦔 Easter Egg Sonic
-=========================== */
+// 🦔 Easter Egg Sonic (icone 1)
+const sonicIcon = document.querySelector('.floating-element:nth-child(1)');
+let sonicCooldown = false;
 
-.sonic-runner {
-  position: fixed;
-  bottom: 60px;
-  width: 140px;
-  pointer-events: none;
-  z-index: 99999;
-}
+const sonicSound = new Audio('media/sons/sonic-ring.mp3');
+sonicSound.volume = 0.6;
 
-.sonic-from-left {
-  left: -200px;
-  animation: sonicRunRight 2.5s linear forwards;
-}
+if (sonicIcon) {
+  sonicIcon.style.cursor = 'pointer';
 
-.sonic-from-right {
-  right: -200px;
-  transform: scaleX(-1);
-  animation: sonicRunLeft 2.5s linear forwards;
-}
+  sonicIcon.addEventListener('click', () => {
+    if (sonicCooldown) return;
+    sonicCooldown = true;
 
-@keyframes sonicRunRight {
-  from { left: -200px; }
-  to { left: 110%; }
+    // Créer Sonic
+    const sonic = document.createElement('img');
+    sonic.src = 'media/gifs/sonic-run.gif';
+    sonic.classList.add('sonic-runner');
+
+    // Direction aléatoire
+    const fromLeft = Math.random() > 0.5;
+    sonic.classList.add(fromLeft ? 'sonic-from-left' : 'sonic-from-right');
+
+    document.body.appendChild(sonic);
+
+    // Son
+    try {
+      sonicSound.currentTime = 0;
+      sonicSound.play();
+    } catch (e) {
+      console.log('Son Sonic bloqué');
+    }
+
+    // Nettoyage
+    setTimeout(() => {
+      sonic.remove();
+      sonicCooldown = false;
+    }, 3000);
+  });
 }
 
 @keyframes sonicRunLeft {
