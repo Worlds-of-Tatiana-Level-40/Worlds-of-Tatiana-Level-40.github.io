@@ -368,7 +368,7 @@ document.getElementById('open-gallery-tally-btn').addEventListener('click', (e) 
         layout: 'modal',
         width: 700,
         autoClose: 3000,
-        doNotShowAfterSubmit: true,
+        doNotShowAfterSubmit: false,
         onSubmit: (payload) => {
           try {
             successSound.play(); // joue le son de confirmation
