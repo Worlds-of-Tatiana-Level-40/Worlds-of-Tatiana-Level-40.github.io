@@ -1168,5 +1168,16 @@ body {
   }
 }
 
+.program-list {
+  list-style: none;          /* supprime les points */
+  padding-left: 0;           /* enlève le retrait à gauche */
+  margin: 0;
+}
 
-
+.program-list li {
+  margin-bottom: 10px;       /* espace entre chaque ligne */
+  font-size: 1rem;
+}
+.day-program {
+  margin-bottom: 50px; /* espace entre Samedi et Dimanche */
+}
