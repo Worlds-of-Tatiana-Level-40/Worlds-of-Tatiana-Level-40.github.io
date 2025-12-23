@@ -529,6 +529,26 @@ body {
   border-left: 4px solid var(--primary-color);
 }
 
+/* Cosplay Buttons */
+.cosplay-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+  .cosplay-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .cosplay-buttons .btn {
+    width: 100%;
+    max-width: 280px;
+  }
+}
+
 /* Ticket */
 .ticket-info {
   max-width: 500px;
