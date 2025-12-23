@@ -443,6 +443,33 @@ body {
   margin-bottom: 2rem;
 }
 
+/* Program Card */
+.program-card {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  text-align: center;
+  box-shadow: var(--shadow-md);
+  border: 2px solid var(--accent-color);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.program-card h3 {
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+.program-card p {
+  color: #806600;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
 /* Cosplay Contest */
 .cosplay-info {
   max-width: 800px;
@@ -1120,7 +1147,6 @@ body {
     transform: scale(1.05);
   }
 }
-
 
 
 
