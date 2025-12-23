@@ -133,7 +133,7 @@ function processBatchesFromList(imagePromises, batchSize) {
       if (validImages.length === 0) {
         showNoImagesMessage();
       } else {
-        showNotification(`📸 ${validImages.length} photo(s) chargée(s) !`, 'info');
+        // Photos chargées silencieusement
       }
       return;
     }
@@ -268,31 +268,6 @@ document.querySelectorAll('.toggle-subsection').forEach(toggle => {
       subsection.classList.add('active');
     }
   });
-});
-
-// Easter egg - Code Konami
-let konamiCode = [];
-const konamiSequence = [
-  'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown',
-  'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight',
-  'KeyB', 'KeyA'
-];
-
-document.addEventListener('keydown', (e) => {
-  konamiCode.push(e.code);
-  
-  if (konamiCode.length > konamiSequence.length) {
-    konamiCode.shift();
-  }
-  
-  if (JSON.stringify(konamiCode) === JSON.stringify(konamiSequence)) {
-    showNotification('🎮 Code Konami activé ! Bonus geek débloqué !', 'success');
-    // Ajouter un effet spécial
-    document.body.style.animation = 'rainbow 2s infinite';
-    setTimeout(() => {
-      document.body.style.animation = '';
-    }, 5000);
-  }
 });
 
 // Système de notifications
@@ -505,13 +480,3 @@ document.getElementById('open-photos-tally-btn').addEventListener('click', (e) =
   
   document.head.appendChild(script);
 });
-
-// Animation rainbow pour l'easter egg
-const style = document.createElement('style');
-style.textContent = `
-  @keyframes rainbow {
-    0% { filter: hue-rotate(0deg); }
-    100% { filter: hue-rotate(360deg); }
-  }
-`;
-document.head.appendChild(style);
